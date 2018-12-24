@@ -31,8 +31,7 @@ class ListRow extends Component {
             style,
             styles,
             ...rest
-        } = this.props;
-        console.log(children)
+        } = this.props
         return (
             <TableRow
                 className={className}
@@ -47,10 +46,6 @@ class ListRow extends Component {
                         field ? (
                             <ListCell
                                 key={index}
-                                // className={classnames(
-                                //     `column-${field.props.source}`,
-                                //     classes.rowCell
-                                // )}
                                 row={row}
                                 field = {field}
                                 id={id}

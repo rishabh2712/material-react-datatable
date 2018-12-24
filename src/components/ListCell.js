@@ -8,13 +8,11 @@ const ListCell = ({
     row,
     ...rest
 }) =>  {
-    console.log(field);
-    console.log(row)
     return (
         <TableCell
             className={classnames(className, field.props.cellClassName)}
             //numeric={field.props.textAlign === 'right'}
-            padding="none"
+            ///padding="none"
         >
             {React.cloneElement(field, {
                 row

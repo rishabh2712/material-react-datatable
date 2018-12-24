@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { ListCell } from './ListCell';
 import ListRow from './ListRow'
+import TablePaginationActions from './Pagination'
+import TablePagination from '@material-ui/core/TablePagination';
 
 const styles = theme => ({
 //   root: {
@@ -21,13 +23,30 @@ const styles = theme => ({
 });
 
 class List extends React.Component {
-
+    state = {
+        rowsPerPage: 10
+    }
     rowClick = (row) => {
-        console.log(row)
+        this.props.onClick(row)
+    }
+
+    handleChangePage = (event, page) => {
+        if(this.props.handlePageChange) {
+            this.props.handlePageChange(page)
+        }
+    }
+
+    handleChangeRowsPerPage = (event, page) => {
+       this.setState({
+           rowsPerPage: event.target.value
+       })
+       if(this.props.changeRowsPerPage) {
+        this.props.changeRowsPerPage(event.target.value)
+       }
     }
 
     render() {
-        const { classes, children, rows } = this.props;
+        const { classes, children, rows } = this.props; 
         return (
             <Paper className={classes.root}>
                 <Table className={classes.table}>
@@ -58,6 +77,22 @@ class List extends React.Component {
                 )}               
                 </TableBody>
                 </Table>
+                {
+                    this.props.pagination &&
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        colSpan={3}
+                        count={rows.length}
+                        rowsPerPage={this.state.rowsPerPage}
+                        page={1}
+                        SelectProps={{
+                        native: false,
+                        }}
+                        onChangePage={this.handleChangePage}
+                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                    />
+                }
             </Paper>
         );
     }

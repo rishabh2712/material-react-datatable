@@ -28,13 +28,12 @@ export const ListHeaderCell = ({
     translate,
     ...rest
 }) => {
-    console.log(field);
     
     return (
         <TableCell
             className={classnames(className, field.props.headerClassName)}
             numeric={field.props.textAlign === 'right'}
-            padding="none"
+           // padding="none"
             variant="head"
             {...rest}
         >

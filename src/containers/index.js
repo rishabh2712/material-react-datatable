@@ -6,7 +6,13 @@ import { Button } from '@material-ui/core';
 let id = 0;
 function createData(name, calories, fat, carbs, protein) {
   id += 1;
-  return { id, name, calories, fat, carbs, protein };
+  return { id, name, calories : { 
+      items: {
+        value: {
+          item: calories
+        } 
+      } 
+  }, fat, carbs, protein };
 }
 
 const rows = [
@@ -19,6 +25,7 @@ const rows = [
 
 
 export class App extends Component {
+
   render() {
     return (
       <div
@@ -31,12 +38,15 @@ export class App extends Component {
       >
           <List 
             rows= {rows}
+            onClick = {(row) => console.log(row)}
+            setPage = {(page) => console.log(page)}
+            pagination = {true}
           >
             <ListField field='name' title='Name' />
-            <ListField field='calories' title='Calories' />
-            <ListField field='fat' title='Fat' />
+            <ListField field='calories' title='Calories' dataAccessor = 'items.value.item'/>
+            <ListField field='fat' title='Fat'/>
             <ListField field='carbs' title='Carbs' />
-            <Button field = 'action' title = 'Action' variant='contained'>Hi</Button>
+            <button>Setup</button>
           </List>
       </div>
     )
