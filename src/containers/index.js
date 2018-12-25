@@ -3,35 +3,17 @@ import List from '../components/List'
 import ListField from '../components/ListField';
 import { Button } from '@material-ui/core';
 
-let id = 0;
-function createData(name, calories, fat, carbs, protein) {
-  id += 1;
-  return { id, name, calories : { 
-      items: {
-        value: {
-          item: calories
-        } 
-      } 
-  }, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 
 export class App extends Component {
   constructor() {
     super()
-    this.state = {data: [], isLoading: false}
+    this.state = {data: [], isLoading: false, remote: true}
   }
 
-  changeRowsPerPage = (num, page) => {
-   
+  componentDidMount() {
+    if(!this.state.remote) {
+      this.crudGetList()
+    }
   }
 
   crudGetList = (pagination) => {
@@ -52,7 +34,11 @@ export class App extends Component {
   }
 
   buildQuery = (pagination) => {
-    return `http://localhost:4000/users?_page=${pagination.page}&_limit=${pagination.perPage}`
+    if(pagination) {
+      return `http://localhost:4000/users?_page=${pagination.page}&_limit=${pagination.perPage}`
+    } else {
+      return `http://localhost:4000/users`
+    }
   }
 
   render() {
@@ -71,7 +57,7 @@ export class App extends Component {
             setPage = {(page) => console.log(page)}
             pagination = {true}
             isLoading = {this.state.isLoading}
-            remote={true}
+            remote={this.state.remote}
             changeRowsPerPage = {this.changeRowsPerPage}
             crudGetList= {this.crudGetList}
           >

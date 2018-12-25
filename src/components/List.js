@@ -6,7 +6,6 @@ import ListHeaderCell from './ListHeaderCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { ListCell } from './ListCell';
 import ListRow from './ListRow'
 import TablePaginationActions from './Pagination'
 import TablePagination from '@material-ui/core/TablePagination';
@@ -123,7 +122,7 @@ class List extends React.Component {
 
 
     render() {
-        const { classes, children, rows } = this.props; 
+        const { classes, children, rows, totalCount } = this.props; 
         return (
             <Paper className={classes.root}>
                 <Table className={classes.table}>
@@ -164,7 +163,7 @@ class List extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         colSpan={3}
-                        count={rows.length}
+                        count={totalCount || rows.length}
                         rowsPerPage={this.state.rowsPerPage}
                         page={this.state.page}
                         SelectProps={{
