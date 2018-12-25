@@ -28,36 +28,37 @@ export const ListHeaderCell = ({
     translate,
     ...rest
 }) => {
-    
     return (
         <TableCell
             className={classnames(className, field.props.headerClassName)}
-            numeric={field.props.textAlign === 'right'}
-           // padding="none"
+            padding="default"
             variant="head"
+            sortDirection={currentSort.orderBy === field.props.title ? currentSort.order : false}
             {...rest}
         >
-            {field.props.sortable !== false &&
-            (field.props.sortBy || field.props.source) ? (
+        {
+            isSorting ? (
                 <Tooltip
-                    enterDelay={300}
+                title="Sort"
+                enterDelay={300}
                 >
                     <TableSortLabel
+                        hideSortIcon={false}
                         active={
-                            currentSort.field ===
-                            (field.props.sortBy || field.props.source)
+                            currentSort.orderBy === field.props.title
                         }
-                        direction={currentSort.order === 'ASC' ? 'asc' : 'desc'}
-                        data-sort={field.props.sortBy || field.props.source}
+                        direction={currentSort.order}
+                        data-sort={field.props.title}
                         onClick={updateSort}
-                        classes={classes}
+                        
                     >
-                        {field}
+                        {field.props.title}
                     </TableSortLabel>
                 </Tooltip>
             ) : (
                 <div>{field.props.title}</div>
-            )}
+            )
+        }
         </TableCell>
     );
     

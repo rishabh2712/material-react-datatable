@@ -23,16 +23,20 @@ const ListField = (props) => {
         row,
         dataAccessor: path
     } = props
-    let data = typeof row[field] === 'object' ? dataAccessor(row[field], path) : row[field]
-    return (
-        <Typography
-            component="span"
-            body1="body1"
-            //className={className}
-        >
-            {data}
-        </Typography>
-    );
+    if(row) {
+        let data = typeof row[field] === 'object' ? dataAccessor(row[field], path) : row[field]
+        return (
+            <Typography
+                component="span"
+                body1="body1"
+                //className={className}
+            >
+                {data}
+            </Typography>
+        );
+    } else {
+        return null
+    }
 };
 
 export default ListField;

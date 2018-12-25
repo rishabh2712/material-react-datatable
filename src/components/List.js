@@ -39,7 +39,9 @@ const styles = theme => ({
 
 class List extends React.Component {
     state = {
-        rowsPerPage: 10, page: 0
+        rowsPerPage: 10, page: 0, currentSort:{
+            order: 'asc', orderBy: null
+        }
     }
     rowClick = (row) => {
         this.props.onClick(row)
@@ -51,7 +53,9 @@ class List extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // only update chart if the data has changed
        if(  prevState.rowsPerPage !== this.state.rowsPerPage ||
-            prevState.page !== this.state.page
+            prevState.page !== this.state.page ||
+            prevState.currentSort.order !== this.state.currentSort.order ||
+            prevState.currentSort.orderBy !== this.state.currentSort.orderBy
         ) {
             this.updateData()
         }
@@ -69,6 +73,44 @@ class List extends React.Component {
         })
     }
 
+    desc(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+          return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+          return 1;
+        }
+        return 0;
+    }
+      
+    stableSort(array, cmp) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+          const order = cmp(a[0], b[0]);
+          if (order !== 0) return order;
+          return a[1] - b[1];
+        });
+        return stabilizedThis.map(el => el[0]);
+    }
+      
+    getSorting(order, orderBy) {
+        return order === 'desc' ? (a, b) => this.desc(a, b, orderBy) : (a, b) => -this.desc(a, b, orderBy);
+    }
+
+    updateSort = (event) => {
+       let order = 'desc'
+       let orderBy =  event.currentTarget.dataset.sort 
+       if(this.state.currentSort.orderBy === orderBy && this.state.currentSort.order==='desc') {
+            order='asc'
+        }
+        this.setState({
+            currentSort: {
+                order,
+                orderBy
+            }
+        })
+    }
+
     handleChangeRowsPerPage = (event) => {
        this.setState({
            rowsPerPage: parseInt(event.target.value)
@@ -81,13 +123,14 @@ class List extends React.Component {
 
     updateData = () => {
         if(this.props.remote) {
-            const {rowsPerPage, page} = this.state
-            const pagination = {
+            const {rowsPerPage, page, currentSort} = this.state
+            const queryParams = {
                 page: parseInt(page, 10),
                 perPage: parseInt(rowsPerPage, 10),
-            };
+                ...currentSort
+            }
             this.props.crudGetList(
-                pagination
+                queryParams
             );
         }
     }
@@ -112,17 +155,17 @@ class List extends React.Component {
 
     getRows = () => {
         let {rows, remote} = this.props
-        let {page, rowsPerPage} = this.state
+        let {page, rowsPerPage, currentSort} = this.state
         if(remote) {
             return rows
         } else {
-            return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            return this.stableSort(rows, this.getSorting(currentSort.order, currentSort.orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         }
     }
 
 
     render() {
-        const { classes, children, rows, totalCount } = this.props; 
+        const { classes, children, rows, totalCount, sorting } = this.props; 
         return (
             <Paper className={classes.root}>
                 <Table className={classes.table}>
@@ -136,6 +179,9 @@ class List extends React.Component {
                                         className={classes.headerCell}
                                         field={field}
                                         key={field.props.source || index}
+                                        isSorting={sorting}
+                                        currentSort = {this.state.currentSort}
+                                        updateSort = {this.updateSort}
                                     />
                                 ) : null
                         )}

@@ -33,9 +33,10 @@ export class App extends Component {
     }))
   }
 
-  buildQuery = (pagination) => {
-    if(pagination) {
-      return `http://localhost:4000/users?_page=${pagination.page}&_limit=${pagination.perPage}`
+  buildQuery = (queryParams) => {
+    
+    if(queryParams) {
+      return `http://localhost:4000/users?_page=${queryParams.page}&_limit=${queryParams.perPage}&_sort=${queryParams.orderBy}&_order=${queryParams.order}`
     } else {
       return `http://localhost:4000/users`
     }
@@ -60,8 +61,9 @@ export class App extends Component {
             remote={this.state.remote}
             changeRowsPerPage = {this.changeRowsPerPage}
             crudGetList= {this.crudGetList}
+            sorting = {true}
           >
-            <ListField field='userId' title='userId' />
+            <ListField field='userId' title='userId'/>
             <ListField field='id' title='id'/>
             <ListField field='title' title='title'/>
             <ListField field='completed' title='completed' dataAccessor = 'city' />
