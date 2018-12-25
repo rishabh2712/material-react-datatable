@@ -25,27 +25,60 @@ const rows = [
 
 
 export class App extends Component {
+  constructor() {
+    super()
+    this.state = {data: [], isLoading: false}
+  }
+
+  changeRowsPerPage = (num, page) => {
+   
+  }
+
+  crudGetList = (pagination) => {
+    let query = this.buildQuery(pagination)
+    this.setState({
+      isLoading: true
+    })
+    fetch(query, {
+      method: 'GET',
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+    .then(response => response.json())
+    .then(json => this.setState({
+      data: json, isLoading: false
+    }))
+  }
+
+  buildQuery = (pagination) => {
+    return `http://localhost:4000/users?_page=${pagination.page}&_limit=${pagination.perPage}`
+  }
 
   render() {
     return (
       <div
         style= {{
-          width: '50%',
+          width: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}
       >
           <List 
-            rows= {rows}
+            rows= {this.state.data}
             onClick = {(row) => console.log(row)}
             setPage = {(page) => console.log(page)}
             pagination = {true}
+            isLoading = {this.state.isLoading}
+            remote={true}
+            changeRowsPerPage = {this.changeRowsPerPage}
+            crudGetList= {this.crudGetList}
           >
-            <ListField field='name' title='Name' />
-            <ListField field='calories' title='Calories' dataAccessor = 'items.value.item'/>
-            <ListField field='fat' title='Fat'/>
-            <ListField field='carbs' title='Carbs' />
+            <ListField field='userId' title='userId' />
+            <ListField field='id' title='id'/>
+            <ListField field='title' title='title'/>
+            <ListField field='completed' title='completed' dataAccessor = 'city' />
             <button>Setup</button>
           </List>
       </div>

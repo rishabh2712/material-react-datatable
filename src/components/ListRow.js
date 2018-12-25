@@ -45,6 +45,7 @@ class ListRow extends Component {
                     (field, index) =>
                         field ? (
                             <ListCell
+                                className={classes.listCell}
                                 key={index}
                                 row={row}
                                 field = {field}
